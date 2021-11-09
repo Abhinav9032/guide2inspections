@@ -5,14 +5,14 @@ require("dotenv").config();
 
 /* authenticate the user and provide login token */
 exports.isAuth = async (req, res, next) => {
-  const { userId, password } = req.body;
-  let user = await User.findOne({ userId });
+  const { email, password } = req.body;
+  let user = await User.findOne({ email });
   if (!user) {
-    return res.status(404).send("user no found");
+    return res.status(404).send("User not found");
   }
   const isMatch = await bcrypt.compareSync(password, user.password);
   if (!isMatch) {
-    return res.status(400).send("invalid password");
+    return res.status(400).send("Invalid password");
   }
 
   const payload = {
