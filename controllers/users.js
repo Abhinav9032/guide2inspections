@@ -20,6 +20,8 @@ exports.register = async (req, res) => {
     if (err) {
       console.log(err);
     }
-    return res.status(200).json(u);
+    return res
+      .status(200)
+      .send({ responseCode: 200, responseMessage: "SUCCESS" });
   });
 };
