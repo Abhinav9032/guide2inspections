@@ -3,6 +3,6 @@ const router = express.Router();
 const auth = require("../controllers/auth");
 require("dotenv").config();
 
-router.post("/", auth.isAuth);
+router.post("/login", auth.isAuth);
 
 module.exports = router;
