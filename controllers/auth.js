@@ -12,6 +12,14 @@ exports.isAuth = async (req, res, next) => {
       .status(404)
       .json({ responseCode: 404, responseMessage: "User not found" });
   }
+
+  let roles = [];
+  user.roles.map((i) => {
+    if (i.isAllowed === true) {
+      roles.push(i);
+    }
+  });
+
   const isMatch = await bcrypt.compareSync(password, user.password);
   if (!isMatch) {
     return res
@@ -39,5 +47,5 @@ exports.isAuth = async (req, res, next) => {
   res.cookie("token", token, { expiresIn: 100000000000 });
   return res
     .status(200)
-    .json({ token, responseCode: 200, responseMessage: "SUCCESSS" });
+    .json({ token, responseCode: 200, responseMessage: "SUCCESSS", roles });
 };
