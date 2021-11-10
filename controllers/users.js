@@ -31,8 +31,8 @@ exports.register = async (req, res) => {
 // editRolesFields
 exports.editRolesFields = async (req, res) => {
   const { email, role, isAllowed } = req.body;
-  const user = await User.findOne({ email });
-  // user.roles = roleAssigned(user.position);
+  const user = await User.findOne({ email }).select("-password");
+
   user.roles.map((r) => {
     if (r.role === role) {
       r.isAllowed = isAllowed;

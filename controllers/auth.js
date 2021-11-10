@@ -16,7 +16,7 @@ exports.isAuth = async (req, res, next) => {
   let roles = [];
   user.roles.map((i) => {
     if (i.isAllowed === true) {
-      roles.push(i);
+      roles.push(i.role);
     }
   });
 
