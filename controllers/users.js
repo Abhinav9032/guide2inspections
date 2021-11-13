@@ -4,6 +4,16 @@ const defaultRoles = require("../actions/roles");
 
 exports.register = async (req, res) => {
   const { name, email, password, position, shipType } = req.body;
+
+  const is_already_registered = await User.findOne({ email });
+
+  if (is_already_registered) {
+    return res.json({
+      responseCode: 403,
+      responseMessage: "User already registered",
+    });
+  }
+
   let hashedPassword;
 
   const salt = await bcrypt.genSalt(10);
