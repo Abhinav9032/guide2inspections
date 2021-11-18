@@ -13,6 +13,22 @@ exports.isAuth = async (req, res, next) => {
       .json({ responseCode: 404, responseMessage: "User not found" });
   }
 
+  let modifiedDate = String(user.date);
+  modifiedDate = modifiedDate
+    .split(":")
+    .join("-")
+    .split(" ")
+    .join("-")
+    .substring(0, 21);
+
+  let tempUser = {
+    name: user.name,
+    email: user.email,
+    position: user.position,
+    shipType: user.shipType,
+    date: modifiedDate,
+  };
+
   let roles = [];
   user.roles.map((i) => {
     if (i.isAllowed === true) {
@@ -45,7 +61,11 @@ exports.isAuth = async (req, res, next) => {
   }
 
   res.cookie("token", token, { expiresIn: 100000000000 });
-  return res
-    .status(200)
-    .json({ token, responseCode: 200, responseMessage: "SUCCESSS", roles });
+  return res.status(200).json({
+    token,
+    responseCode: 200,
+    responseMessage: "SUCCESSS",
+    roles,
+    user: tempUser,
+  });
 };
