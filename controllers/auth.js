@@ -13,20 +13,12 @@ exports.isAuth = async (req, res, next) => {
       .json({ responseCode: 404, responseMessage: "User not found" });
   }
 
-  let modifiedDate = String(user.date);
-  modifiedDate = modifiedDate
-    .split(":")
-    .join("-")
-    .split(" ")
-    .join("-")
-    .substring(0, 21);
-
   let tempUser = {
     name: user.name,
     email: user.email,
     position: user.position,
     shipType: user.shipType,
-    date: modifiedDate,
+    createdUser: user.createdUser,
   };
 
   let roles = [];

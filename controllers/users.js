@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const defaultRoles = require("../actions/roles");
 
 exports.register = async (req, res) => {
-  const { name, email, password, position, shipType } = req.body;
+  const { name, email, password, position, shipType, createdDate } = req.body;
 
   const is_already_registered = await User.findOne({ email });
 
@@ -25,6 +25,7 @@ exports.register = async (req, res) => {
     password: hashedPassword,
     position,
     shipType,
+    createdDate,
     roles: defaultRoles,
   });
 
