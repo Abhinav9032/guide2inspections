@@ -31,8 +31,8 @@ exports.isAuth = async (req, res, next) => {
   const isMatch = await bcrypt.compareSync(password, user.password);
   if (!isMatch) {
     return res
-      .status(400)
-      .json({ responseCode: 400, responseMessage: "Invalid password" });
+      .status(200)
+      .json({ responseCode: 400, responseMessage: "Invalid credentials" });
   }
 
   const payload = {
