@@ -18,7 +18,7 @@ exports.isAuth = async (req, res, next) => {
     email: user.email,
     position: user.position,
     shipType: user.shipType,
-    createdUser: user.createdUser,
+    createdDate: user.createdDate,
   };
 
   let roles = [];
