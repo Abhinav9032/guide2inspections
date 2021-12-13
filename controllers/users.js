@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const defaultRoles = require("../actions/roles");
+const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
   const { name, email, password, position, shipType, createdDate } = req.body;
@@ -26,16 +26,25 @@ exports.register = async (req, res) => {
     position,
     shipType,
     createdDate,
-    roles: defaultRoles,
   });
 
   user.save((err, u) => {
     if (err) {
       console.log(err);
     }
+    const payload = {
+      user: {
+        id: u.id,
+      },
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_SCERET, {
+      expiresIn: 100000000000,
+    });
+
     return res
       .status(200)
-      .send({ responseCode: 200, responseMessage: "SUCCESS" });
+      .send({ responseCode: 200, responseMessage: "SUCCESS", user: u, token });
   });
 };
 

@@ -1,13 +1,34 @@
 const mongoose = require("mongoose");
 
 const questionSchema = mongoose.Schema({
-  questionText: {
+  suffix: {
     type: String,
   },
-  section: {
+  qId: {
+    type: Number,
+  },
+  qText: {
     type: String,
   },
-  sub_section: {
+  ansType: {
+    type: String,
+  },
+  link: {
+    type: String,
+  },
+  description: {
+    type: String,
+  },
+  rank: {
+    type: String,
+  },
+  shipType: {
+    type: String,
+  },
+  vIq: {
+    type: String,
+  },
+  qParent: {
     type: String,
   },
 });

@@ -17,6 +17,18 @@ const userSchema = mongoose.Schema({
   shipType: {
     type: String,
   },
+  organisation: {
+    type: String,
+  },
+  futImpl1: {
+    type: String,
+  },
+  futImpl2: {
+    type: String,
+  },
+  futImpl3: {
+    type: String,
+  },
   roles: [
     {
       role: {
@@ -28,6 +40,9 @@ const userSchema = mongoose.Schema({
     },
   ],
   createdDate: {
+    type: String,
+  },
+  modifiedDate: {
     type: String,
   },
 });
