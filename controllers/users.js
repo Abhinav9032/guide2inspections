@@ -7,6 +7,8 @@ exports.register = async (req, res) => {
 
   const is_already_registered = await User.findOne({ email });
 
+  const numberOfUser = (await User.find({})).length;
+
   if (is_already_registered) {
     return res.json({
       responseCode: 403,
@@ -20,6 +22,7 @@ exports.register = async (req, res) => {
   hashedPassword = await bcrypt.hash(password, salt);
 
   let user = new User({
+    userId: numberOfUser + 1,
     name,
     email,
     password: hashedPassword,
@@ -70,3 +73,24 @@ exports.editRolesFields = async (req, res) => {
     }
   });
 };
+
+//get user
+exports.getUser = (req, res) => {
+  const { userId } = req.body;
+  User.findOne({ userId })
+    .select("-password -_id -__v")
+    .exec((err, user) => {
+      if (err) {
+        console.log(err);
+      }
+
+      return res.status(200).json({
+        responseCode: 200,
+        responseMessage: "SUCCESS",
+        userDetails: user,
+      });
+    });
+};
+
+//update user image
+exports.updateUserImage = (req, res) => {};
