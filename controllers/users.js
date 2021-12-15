@@ -31,7 +31,7 @@ exports.register = async (req, res) => {
     createdDate,
   });
 
-  user.save((err, u) => {
+  user.save(async (err, u) => {
     if (err) {
       console.log(err);
     }
@@ -45,9 +45,16 @@ exports.register = async (req, res) => {
       expiresIn: 100000000000,
     });
 
-    return res
-      .status(200)
-      .send({ responseCode: 200, responseMessage: "SUCCESS", user: u, token });
+    let createdUser = await User.findById({ _id: u.id }).select(
+      "-password -_id -__v"
+    );
+
+    return res.status(200).send({
+      responseCode: 200,
+      responseMessage: "SUCCESS",
+      user: createdUser,
+      token,
+    });
   });
 };
 
