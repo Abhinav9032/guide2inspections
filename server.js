@@ -23,7 +23,7 @@ app.use("/api/ships", require("./routes/ships"));
 app.use("/api/positions", require("./routes/positions"));
 
 app.get('/hello/aws', (req, res) => {
-  res.json({message: 'Ths is from aws deployment'})
+  res.json({message: 'Ths is from aws deployment code pipeline testing'})
 })
 
 const PORT = process.env.PORT || 8081 
