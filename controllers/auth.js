@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { getShipId, getPositionId } = require("../actions/postion&ship");
 require("dotenv").config();
 
 /* authenticate the user and provide login token */
@@ -17,8 +18,8 @@ exports.isAuth = async (req, res, next) => {
     name: user.name,
     userId: user.userId,
     email: user.email,
-    position: user.position,
-    shipType: user.shipType,
+    position: parseInt(user.position),
+    shipType: parseInt(user.shipType),
     createdDate: user.createdDate,
   };
 

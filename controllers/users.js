@@ -1,6 +1,9 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const AWS = require("aws-sdk");
+const { getShipId, getPositionId } = require("../actions/postion&ship");
+require("dotenv").config();
 
 exports.register = async (req, res) => {
   const { name, email, password, position, shipType, createdDate } = req.body;
@@ -100,4 +103,14 @@ exports.getUser = (req, res) => {
 };
 
 //update user image
-exports.updateUserImage = (req, res) => {};
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SCERET_ACCESS_KEY,
+});
+
+exports.updateUserImage = (req, res) => {
+  // const imageFileName = req.file.originalname.split(".");
+  // console.log(Date.now());
+  // console.log(req.file);
+  // console.log(imageFileName);
+};
