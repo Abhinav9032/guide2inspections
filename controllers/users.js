@@ -2,7 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const AWS = require("aws-sdk");
-const { getShipId, getPositionId } = require("../actions/postion&ship");
+// const { getShipId, getPositionId } = require("../actions/postion&ship");
 require("dotenv").config();
 
 exports.register = async (req, res) => {
@@ -31,6 +31,7 @@ exports.register = async (req, res) => {
     password: hashedPassword,
     position,
     shipType,
+    profileImage: "none",
     createdDate,
   });
 
@@ -49,7 +50,7 @@ exports.register = async (req, res) => {
     });
 
     let createdUser = await User.findById({ _id: u.id }).select(
-      "-password -_id -__v"
+      "-password -_id -__v -profileImage"
     );
 
     return res.status(200).send({
@@ -102,17 +103,39 @@ exports.getUser = (req, res) => {
     });
 };
 
-//update user image
+// aws s3 instance
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SCERET_ACCESS_KEY,
 });
 
-exports.updateUserImage = (req, res) => {
-  // const imageFileName = req.file.originalname.split(".");
-  // console.log(Date.now());
-  // console.log(req.file);
-  // console.log(imageFileName);
-  // fixing code push issues
+// desc: update user image
+exports.updateUserImage = async (req, res) => {
+  const imageFileName = req.file.originalname.split(".");
+  const fileExtension = imageFileName[imageFileName.length - 1];
+
+  const user = await User.findOne({ userId: req.body.userId });
+
+  const s3Config = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: Date.now() + "." + fileExtension,
+    Body: req.file.buffer,
+  };
+
+  s3.upload(s3Config, async (err, imageUrl) => {
+    if (err) {
+      console.log(err);
+    }
+
+    user.profileImage = imageUrl.Location;
+    user.save((error, success) => {
+      if (error) {
+        console.log(error);
+      }
+
+      return res
+        .status(200)
+        .json({ userId: success.userId, image: success.profileImage });
+    });
+  });
 };
-//random changes

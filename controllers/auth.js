@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { getShipId, getPositionId } = require("../actions/postion&ship");
+// const { getShipId, getPositionId } = require("../actions/postion&ship");
 require("dotenv").config();
 
 /* authenticate the user and provide login token */
