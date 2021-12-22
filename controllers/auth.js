@@ -15,6 +15,7 @@ exports.isAuth = async (req, res, next) => {
 
   let tempUser = {
     name: user.name,
+    userId: user.userId,
     email: user.email,
     position: user.position,
     shipType: user.shipType,
