@@ -16,4 +16,23 @@ const defaultRoles = [
   { role: "Security", isAllowed: false },
 ];
 
-module.exports = defaultRoles;
+const getSectionName = (sectionId) => {
+  if (sectionId == 1) return "Engine Room";
+  if (sectionId == 2) return "Engine Documentation";
+  if (sectionId == 3) return "Bridge";
+  if (sectionId == 4) return "LSA FFA";
+  if (sectionId == 5) return "Accomodation";
+  if (sectionId == 6) return "Galley";
+  if (sectionId == 7) return "Hospital";
+  if (sectionId == 8) return "Aft Poop Deck";
+  if (sectionId == 9) return "Forecastle";
+  if (sectionId == 10) return "Upper Deck";
+  if (sectionId == 11) return "CCR";
+  if (sectionId == 12) return "Deck Documentation";
+  if (sectionId == 13) return "Emergency Head Quarters";
+  if (sectionId == 14) return "Master's Documentation";
+  if (sectionId == 15) return "Pumproom";
+  if (sectionId == 16) return "Security";
+};
+
+module.exports = { defaultRoles, getSectionName };

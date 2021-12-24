@@ -2,6 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const AWS = require("aws-sdk");
+const { getSectionName } = require("../actions/roles");
 // const { getShipId, getPositionId } = require("../actions/postion&ship");
 require("dotenv").config();
 
@@ -24,6 +25,23 @@ exports.register = async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   hashedPassword = await bcrypt.hash(password, salt);
 
+  let acl = [];
+  for (let i = 1; i <= 16; i++) {
+    if (i == 4) {
+      acl.push({
+        sectionId: i,
+        sectionName: getSectionName(i),
+        isVisible: true,
+      });
+    } else {
+      acl.push({
+        sectionId: i,
+        sectionName: getSectionName(i),
+        isVisible: false,
+      });
+    }
+  }
+
   let user = new User({
     userId: numberOfUser + 1,
     name,
@@ -32,6 +50,7 @@ exports.register = async (req, res) => {
     position,
     shipType,
     profileImage: "none",
+    acl,
     createdDate,
   });
 
@@ -144,4 +163,27 @@ exports.updateUserImage = async (req, res) => {
 exports.dashboard = async (req, res) => {
   const { userId } = req.body;
   const user = await User.findOne({ userId }).select("-password");
+  return res.status(200).json({ acl: user.acl });
+};
+
+// desc: allocate or deallocate section
+exports.allocateDeallocateSection = async (req, res) => {
+  const { userId, sectionId, unlockDate } = req.body;
+  const user = await User.findOne({ userId }).select("-password");
+
+  user.acl.map((i) => {
+    if (i.sectionId == sectionId) {
+      i.isVisible = true;
+      i.unlockDate = unlockDate;
+    }
+  });
+
+  user.save((err, success) => {
+    if (err) {
+      console.log(err);
+    }
+    return res
+      .status(200)
+      .json({ responseCode: 200, responseMessage: "SUCCESS", user: success });
+  });
 };

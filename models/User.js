@@ -53,15 +53,19 @@ const userSchema = mongoose.Schema({
   },
   acl: [
     {
+      _id: false,
       sectionId: {
         type: Number,
+      },
+      sectionName: {
+        type: String,
       },
       isVisible: {
         type: Boolean,
         default: false,
       },
       unlockDate: {
-        type: Date,
+        type: String,
       },
     },
   ],

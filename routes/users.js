@@ -24,4 +24,7 @@ router.post("/update-profile-pic", upload, users.updateUserImage);
 // desc: user dashboard
 router.post("/dashboard", users.dashboard);
 
+// desc: allocate or deallocate section
+router.post("/manage-acl", users.allocateDeallocateSection);
+
 module.exports = router;
