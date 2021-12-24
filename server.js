@@ -3,12 +3,12 @@ const mongoose = require("mongoose");
 const morgan = require("morgan");
 require("dotenv").config();
 const app = express();
-
+const dbUrl = 'mongodb+srv://mongo-man:Genvision159!@cluster0.t79w5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 app.use(express.json({ extended: false }));
 app.use(morgan("combined"));
 
 mongoose
-  .connect(process.env.DATABASE, {
+  .connect(dbUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
