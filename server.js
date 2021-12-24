@@ -7,6 +7,7 @@ const dbUrl =
   "mongodb+srv://mongo-man:Genvision159!@cluster0.t79w5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 app.use(express.json({ extended: false }));
 app.use(morgan("combined"));
+//const dbUrl = 'mongodb+srv://mongo-man:Genvision159!@cluster0.t79w5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 
 mongoose
   .connect(dbUrl, {
