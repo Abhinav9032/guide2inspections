@@ -6,7 +6,6 @@ require("dotenv").config();
 
 /* authenticate the user and provide login token */
 exports.isAuth = async (req, res, next) => {
-  console.log("Checkpoint 1");
   const { email, password } = req.body;
   let user = await User.findOne({ email });
   if (!user) {
@@ -15,7 +14,6 @@ exports.isAuth = async (req, res, next) => {
       .json({ responseCode: 404, responseMessage: "User not found" });
   }
 
-  console.log("Checkpoint 2 ",user );
   let tempUser = {
     name: user.name,
     userId: user.userId,
@@ -24,7 +22,6 @@ exports.isAuth = async (req, res, next) => {
     shipType: parseInt(user.shipType),
     createdDate: user.createdDate,
   };
-  console.log("Checkpoint 3 ",tempUser );
   let roles = [];
   user.roles.map((i) => {
     if (i.isAllowed === true) {
@@ -38,17 +35,14 @@ exports.isAuth = async (req, res, next) => {
       .status(200)
       .json({ responseCode: 400, responseMessage: "Invalid credentials" });
   }
-  console.log("Checkpoint 4 ",isMatch );
   const payload = {
     user: {
       id: user.id,
     },
   };
-  console.log("Checkpoint 5 ",payload );
   const token = jwt.sign(payload, process.env.JWT_SCERET, {
     expiresIn: 100000000000,
   });
-  console.log("Checkpoint 6 ",token );
   user.password = undefined;
 
   if (!token) {
@@ -58,7 +52,6 @@ exports.isAuth = async (req, res, next) => {
   }
   
   res.cookie("token", token, { expiresIn: 100000000000 });
-  console.log("Checkpoint 7 ",res );
   return res.status(200).json({
     token,
     responseCode: 200,
