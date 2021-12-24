@@ -51,6 +51,20 @@ const userSchema = mongoose.Schema({
   modifiedDate: {
     type: String,
   },
+  acl: [
+    {
+      sectionId: {
+        type: Number,
+      },
+      isVisible: {
+        type: Boolean,
+        default: false,
+      },
+      unlockDate: {
+        type: Date,
+      },
+    },
+  ],
 });
 
 module.exports = User = mongoose.model("user", userSchema);

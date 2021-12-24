@@ -21,6 +21,7 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/questions", require("./routes/questions"));
 app.use("/api/ships", require("./routes/ships"));
 app.use("/api/positions", require("./routes/positions"));
+app.use("/api/sections", require("./routes/sections"));
 
 app.listen(process.env.PORT, () => {
   console.log(`SERVER WORKING AT ${process.env.PORT}`);

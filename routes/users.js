@@ -21,4 +21,7 @@ const upload = multer({ storage }).single("image");
 
 router.post("/update-profile-pic", upload, users.updateUserImage);
 
+// desc: user dashboard
+router.post("/dashboard", users.dashboard);
+
 module.exports = router;

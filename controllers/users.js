@@ -139,3 +139,9 @@ exports.updateUserImage = async (req, res) => {
     });
   });
 };
+
+// desc: user's dashboard
+exports.dashboard = async (req, res) => {
+  const { userId } = req.body;
+  const user = await User.findOne({ userId }).select("-password");
+};
