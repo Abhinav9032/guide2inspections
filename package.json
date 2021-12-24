@@ -13,6 +13,7 @@
   "author": "WaveIn",
   "license": "MIT",
   "dependencies": {
+    "aws-sdk": "^2.1048.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
@@ -20,6 +21,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.12",
     "morgan": "^1.10.0",
+    "multer": "^1.4.4",
     "nodemon": "^2.0.14"
   }
 }
