@@ -29,7 +29,7 @@ app.get("/hello/aws", (req, res) => {
   res.json({ message: "Ths is from aws deployment code pipeline testing" });
 });
 
-const PORT = 5000;
+const PORT = 8081;
 
 app.listen(PORT, () => {
   console.log(`SERVER WORKING AT ${PORT}`);
