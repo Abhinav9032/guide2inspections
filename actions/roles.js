@@ -16,6 +16,7 @@ const defaultRoles = [
   { role: "Security", isAllowed: false },
 ];
 
+//implement Map
 const getSectionNameAndSeq = (sectionId) => {
   if (sectionId == 1) return { sectionName: "Engine Room", sectionSequence: 1 };
   if (sectionId == 2)
