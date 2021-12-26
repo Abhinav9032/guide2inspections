@@ -2,7 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const AWS = require("aws-sdk");
-const { getSectionName } = require("../actions/roles");
+const { getSectionNameAndSeq } = require("../actions/roles");
 // const { getShipId, getPositionId } = require("../actions/postion&ship");
 require("dotenv").config();
 
@@ -30,13 +30,15 @@ exports.register = async (req, res) => {
     if (i == 4) {
       acl.push({
         sectionId: i,
-        sectionName: getSectionName(i),
+        sectionName: getSectionNameAndSeq(i).sectionName,
+        sectionSequence: getSectionNameAndSeq(i).sectionSequence,
         isVisible: true,
       });
     } else {
       acl.push({
         sectionId: i,
-        sectionName: getSectionName(i),
+        sectionName: getSectionNameAndSeq(i).sectionName,
+        sectionSequence: getSectionNameAndSeq(i).sectionSequence,
         isVisible: false,
       });
     }
@@ -69,7 +71,7 @@ exports.register = async (req, res) => {
     });
 
     let createdUser = await User.findById({ _id: u.id }).select(
-      "-password -_id -__v -profileImage"
+      "-password -_id -__v -profileImage -acl"
     );
 
     return res.status(200).send({
