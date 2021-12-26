@@ -22,7 +22,6 @@ exports.isAuth = async (req, res, next) => {
     shipType: parseInt(user.shipType),
     createdDate: user.createdDate,
   };
-
   let roles = [];
   user.roles.map((i) => {
     if (i.isAllowed === true) {
@@ -36,13 +35,11 @@ exports.isAuth = async (req, res, next) => {
       .status(200)
       .json({ responseCode: 400, responseMessage: "Invalid credentials" });
   }
-
   const payload = {
     user: {
       id: user.id,
     },
   };
-
   const token = jwt.sign(payload, process.env.JWT_SCERET, {
     expiresIn: 100000000000,
   });
@@ -53,7 +50,7 @@ exports.isAuth = async (req, res, next) => {
       .status(500)
       .json({ responseCode: 500, responseMessage: "Internal server error" });
   }
-
+  
   res.cookie("token", token, { expiresIn: 100000000000 });
   return res.status(200).json({
     token,

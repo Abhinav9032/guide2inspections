@@ -69,6 +69,8 @@ exports.getQuestions = async (req, res) => {
     if (err) {
       console.log(err);
     }
+
+    return res.status(200).json({ message: "SUCCESS" });
   });
 
   // myQuestions.map(async (q) => {
@@ -80,6 +82,5 @@ exports.getQuestions = async (req, res) => {
   // });
 };
 
-//prepare a route for changing the  to type from string to array, for rank and ship type also 
+//prepare a route for changing the  to type from string to array, for rank and ship type also
 // try to string to integer
-

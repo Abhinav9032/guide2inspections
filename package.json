@@ -1,7 +1,10 @@
 {
   "name": "naviguide-api",
   "version": "1.0.0",
-  "description": "NAVIGUIDE API",
+  "config": {
+    "unsafe-perm":true
+ },
+   "description": "NAVIGUIDE API",
   "main": "index.js",
   "scripts": {
     "server": "nodemon server.js",
