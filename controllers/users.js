@@ -165,7 +165,13 @@ exports.updateUserImage = async (req, res) => {
 exports.dashboard = async (req, res) => {
   const { userId } = req.body;
   const user = await User.findOne({ userId }).select("-password");
-  return res.status(200).json({ acl: user.acl });
+  if (!user)
+    return res
+      .status(404)
+      .json({ responseCode: 404, responseMessage: "FAILED" });
+  return res
+    .status(200)
+    .json({ responseCode: 200, responseMessage: "SUCCESS", acl: user.acl });
 };
 
 // desc: allocate or deallocate section
