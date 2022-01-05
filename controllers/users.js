@@ -13,6 +13,11 @@ exports.register = async (req, res) => {
 
   const numberOfUser = (await User.find({})).length;
 
+  const currentInspection = {
+    shipType,
+    shipName: "none",
+  };
+
   if (is_already_registered) {
     return res.json({
       responseCode: 403,
@@ -53,6 +58,7 @@ exports.register = async (req, res) => {
     shipType,
     profileImage: "none",
     acl,
+    currentInspection,
     createdDate,
   });
 
@@ -71,7 +77,7 @@ exports.register = async (req, res) => {
     });
 
     let createdUser = await User.findById({ _id: u.id }).select(
-      "-password -_id -__v -profileImage -acl"
+      "-password -_id -__v -profileImage -acl -currentInspection"
     );
 
     return res.status(200).send({
@@ -194,4 +200,45 @@ exports.allocateDeallocateSection = async (req, res) => {
       .status(200)
       .json({ responseCode: 200, responseMessage: "SUCCESS", user: success });
   });
+};
+
+// desc: update user information
+exports.updateUserProfile = async (req, res) => {
+  const { position, shipType, userId } = req.body;
+  const user = await User.findOne({ userId });
+  if (position) user.position = position;
+  if (shipType) {
+    user.shipType = shipType;
+    user.currentInspection.shipType = shipType;
+  }
+  const userSaved = await user.save();
+  if (userSaved)
+    res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+};
+
+// desc: update current inspection
+exports.updateCurrentInspection = async (req, res) => {
+  const { userId, shipType, shipName } = req.body;
+  const user = await User.findOne({ userId });
+  if (shipType) {
+    user.shipType = shipType;
+    user.currentInspection.shipType = shipType;
+  }
+  if (shipName) user.currentInspection.shipName = shipName;
+  const userSaved = await user.save();
+  if (userSaved)
+    res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+};
+
+// desc: get current inspection
+exports.getCurrentInspection = async (req, res) => {
+  const { userId } = req.body;
+  const user = await User.findOne({ userId });
+  if (user) {
+    res.status(200).json({
+      responseCode: 200,
+      responseMessage: "SUCCESS",
+      currentInspection: user.currentInspection,
+    });
+  }
 };
