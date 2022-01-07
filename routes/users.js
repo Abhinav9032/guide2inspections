@@ -34,6 +34,6 @@ router.put("/update-profile", users.updateUserProfile);
 router.put("/update-currentInspection", users.updateCurrentInspection);
 
 // desc: get user's current inspection
-router.get("/get-currentInspection", users.getCurrentInspection);
+router.get("/get-currentInspection/:userId", users.getCurrentInspection);
 
 module.exports = router;

@@ -232,7 +232,7 @@ exports.updateCurrentInspection = async (req, res) => {
 
 // desc: get current inspection
 exports.getCurrentInspection = async (req, res) => {
-  const { userId } = req.body;
+  const { userId } = req.params;
   const user = await User.findOne({ userId });
   if (user) {
     res.status(200).json({
