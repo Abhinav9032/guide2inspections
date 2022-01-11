@@ -18,10 +18,10 @@ const userSchema = mongoose.Schema({
     type: String,
   },
   position: {
-    type: String,
+    type: Number,
   },
   shipType: {
-    type: String,
+    type: Number,
   },
   organisation: {
     type: String,
@@ -38,13 +38,21 @@ const userSchema = mongoose.Schema({
   roles: [
     {
       role: {
-        type: String,
+        type: Number,
       },
       isAllowed: {
         type: Boolean,
       },
     },
   ],
+  currentInspection: {
+    shipType: {
+      type: Number,
+    },
+    shipName: {
+      type: String,
+    },
+  },
   createdDate: {
     type: String,
   },

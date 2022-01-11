@@ -22,6 +22,8 @@ app.use("/api/questions", require("./routes/questions"));
 app.use("/api/ships", require("./routes/ships"));
 app.use("/api/positions", require("./routes/positions"));
 app.use("/api/sections", require("./routes/sections"));
+app.use("/api/subsection", require("./routes/subSection"));
+app.use("/api/config", require("./routes/config"));
 
 app.get("/hello/aws", (req, res) => {
   res.json({ message: "Ths is from aws deployment code pipeline testing" });
