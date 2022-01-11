@@ -4,10 +4,10 @@ exports.saveReport = async (req, res) => {
   const { reports } = req.body;
   reports.map(async (report) => {
     let formedAnswerId = "Q" + report.qId + "_" + "U" + report.userId;
-
     let newReport = Report({
       qId: report.qId,
       userId: report.userId,
+      answer: report.answer,
       answerId: formedAnswerId,
       comment: report.comment,
       imageLink: report.imageLink,
