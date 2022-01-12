@@ -198,7 +198,11 @@ exports.allocateDeallocateSection = async (req, res) => {
     }
     return res
       .status(200)
-      .json({ responseCode: 200, responseMessage: "SUCCESS", user: success });
+      .json({
+        responseCode: 200,
+        responseMessage: "SUCCESS",
+        acl: success.acl,
+      });
   });
 };
 
