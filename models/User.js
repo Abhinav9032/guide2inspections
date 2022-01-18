@@ -26,6 +26,10 @@ const userSchema = mongoose.Schema({
   organisation: {
     type: String,
   },
+  videoAccess: {
+    type: Boolean,
+    default: false,
+  },
   futImpl1: {
     type: String,
   },

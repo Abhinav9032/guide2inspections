@@ -21,6 +21,7 @@ exports.isAuth = async (req, res, next) => {
     position: parseInt(user.position),
     shipType: parseInt(user.shipType),
     createdDate: user.createdDate,
+    videoAccess: user.videoAccess,
   };
   let roles = [];
   user.roles.map((i) => {
@@ -50,7 +51,7 @@ exports.isAuth = async (req, res, next) => {
       .status(500)
       .json({ responseCode: 500, responseMessage: "Internal server error" });
   }
-  
+
   res.cookie("token", token, { expiresIn: 100000000000 });
   return res.status(200).json({
     token,

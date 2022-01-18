@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const AWS = require("aws-sdk");
 const { getSectionNameAndSeq } = require("../actions/roles");
+const nodemailer = require("nodemailer");
 // const { getShipId, getPositionId } = require("../actions/postion&ship");
 require("dotenv").config();
 
@@ -196,13 +197,11 @@ exports.allocateDeallocateSection = async (req, res) => {
     if (err) {
       console.log(err);
     }
-    return res
-      .status(200)
-      .json({
-        responseCode: 200,
-        responseMessage: "SUCCESS",
-        acl: success.acl,
-      });
+    return res.status(200).json({
+      responseCode: 200,
+      responseMessage: "SUCCESS",
+      acl: success.acl,
+    });
   });
 };
 
