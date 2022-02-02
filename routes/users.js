@@ -39,4 +39,7 @@ router.put("/update-currentInspection", users.updateCurrentInspection);
 // desc: get user's current inspection
 router.get("/get-currentInspection/:userId", users.getCurrentInspection);
 
+// desc: grant or deny video access
+router.post("/grant-deny-video-access", users.grantDenyVideoAccess);
+
 module.exports = router;
