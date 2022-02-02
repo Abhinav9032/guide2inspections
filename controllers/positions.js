@@ -1,4 +1,5 @@
 const Positions = require("../models/Positions");
+const sync = require("../controllers/sync");
 
 exports.getPositions = (req, res) => {
   Positions.find()
@@ -15,4 +16,16 @@ exports.getPositions = (req, res) => {
         positions,
       });
     });
+};
+
+exports.addPosition = async (req, res) => {
+  const { rankName } = req.body;
+  const rank = await Positions.find({}).sort({ _id: -1 });
+  let newRank = Positions({
+    rankId: parseInt(rank[0].rankId) + 1,
+    rankName,
+  });
+  sync.syncUpdates("positions");
+  await newRank.save();
+  res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
 };

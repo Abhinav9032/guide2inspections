@@ -183,13 +183,13 @@ exports.dashboard = async (req, res) => {
 
 // desc: allocate or deallocate section
 exports.allocateDeallocateSection = async (req, res) => {
-  const { userId, sectionId, unlockDate } = req.body;
+  const { userId, sectionId, lockDate } = req.body;
   const user = await User.findOne({ userId }).select("-password");
 
   user.acl.map((i) => {
     if (i.sectionId == sectionId) {
       i.isVisible = true;
-      i.unlockDate = unlockDate;
+      i.lockDate = lockDate;
     }
   });
 
@@ -203,6 +203,23 @@ exports.allocateDeallocateSection = async (req, res) => {
       acl: success.acl,
     });
   });
+};
+
+// desc: set a particular section as isVisible:true for matching date
+exports.allocateSection = async (req, res) => {
+  const { userId } = req.body;
+  const user = await User.findOne({ userId });
+  const { acl } = user;
+  let date = new Date();
+  date = date.toISOString().split("T")[0];
+  acl.map((i) => {
+    if (i.lockDate >= date) {
+      i.isVisible = false;
+    }
+  });
+  await user.save();
+
+  res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS", acl });
 };
 
 // desc: update user information
@@ -245,3 +262,5 @@ exports.getCurrentInspection = async (req, res) => {
     });
   }
 };
+
+// get the unlock date in js time,

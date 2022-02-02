@@ -72,12 +72,50 @@ const userSchema = mongoose.Schema({
       sectionName: {
         type: String,
       },
-      isVisible: {
-        type: Boolean,
-        default: false,
-      },
-      unlockDate: {
+      //   isVisible: {
+      //     type: Boolean,
+      //     default: false,
+      //   },
+      lockDate: {
         type: String,
+      },
+    },
+  ],
+  questions: [
+    {
+      suffix: {
+        type: String,
+      },
+      qId: {
+        type: Number,
+      },
+      qText: {
+        type: String,
+      },
+      ansType: {
+        type: String,
+      },
+      link: {
+        type: String,
+      },
+      description: {
+        type: String,
+      },
+      shipType: {
+        type: String,
+      },
+      vIq: {
+        type: String,
+      },
+      qParent: {
+        type: String,
+      },
+    },
+  ],
+  blockedQuestions: [
+    {
+      qId: {
+        type: Number,
       },
     },
   ],

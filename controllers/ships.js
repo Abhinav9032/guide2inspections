@@ -1,5 +1,5 @@
 const Ships = require("../models/Ships");
-const Positions = require("../models/Positions");
+const sync = require("../controllers/sync");
 
 exports.getShips = (req, res) => {
   Ships.find()
@@ -18,3 +18,14 @@ exports.getShips = (req, res) => {
     });
 };
 
+exports.addShipType = async (req, res) => {
+  const ships = await Ships.find({}).sort({ _id: -1 });
+  const { shipTypeName } = req.body;
+  let newShipType = Ships({
+    shipTypeId: parseInt(ships[0].shipTypeId) + 1,
+    shipTypeName,
+  });
+  sync.syncUpdates("shipType");
+  await newShipType.save();
+  res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+};

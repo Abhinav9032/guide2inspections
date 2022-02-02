@@ -4,4 +4,8 @@ const questions = require("../controllers/questions");
 
 router.get("/fetchQuestions/:page", questions.fetchQuestions);
 
+router.post("/addOrBlockQuestions", questions.addOrBlockQuestions);
+
+router.post("/addGlobalQuestion", questions.addGlobalQuestion);
+
 module.exports = router;
