@@ -21,8 +21,8 @@ exports.isAuth = async (req, res, next) => {
     position: parseInt(user.position),
     shipType: parseInt(user.shipType),
     createdDate: user.createdDate,
+    videoAccess: user.videoAccess,
   };
-
   let roles = [];
   user.roles.map((i) => {
     if (i.isAllowed === true) {
@@ -36,13 +36,11 @@ exports.isAuth = async (req, res, next) => {
       .status(200)
       .json({ responseCode: 400, responseMessage: "Invalid credentials" });
   }
-
   const payload = {
     user: {
       id: user.id,
     },
   };
-
   const token = jwt.sign(payload, process.env.JWT_SCERET, {
     expiresIn: 100000000000,
   });

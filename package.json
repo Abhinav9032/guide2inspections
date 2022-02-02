@@ -1,6 +1,9 @@
 {
   "name": "naviguide-api",
   "version": "1.0.0",
+  "config": {
+    "unsafe-perm": true
+  },
   "description": "NAVIGUIDE API",
   "main": "index.js",
   "scripts": {
@@ -19,6 +22,7 @@
     "mongoose": "^6.0.12",
     "morgan": "^1.10.0",
     "multer": "^1.4.4",
+    "nodemailer": "^6.7.2",
     "nodemon": "^2.0.14"
   }
 }

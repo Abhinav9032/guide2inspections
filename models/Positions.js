@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
 
 const positionSchema = mongoose.Schema({
-  positionId: {
+  _id: false,
+  rankId: {
     type: String,
   },
-  positionName: {
+  rankName: {
     type: String,
   },
 });

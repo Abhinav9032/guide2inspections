@@ -2,6 +2,8 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const AWS = require("aws-sdk");
+const { getSectionNameAndSeq } = require("../actions/roles");
+const nodemailer = require("nodemailer");
 // const { getShipId, getPositionId } = require("../actions/postion&ship");
 require("dotenv").config();
 
@@ -11,6 +13,11 @@ exports.register = async (req, res) => {
   const is_already_registered = await User.findOne({ email });
 
   const numberOfUser = (await User.find({})).length;
+
+  const currentInspection = {
+    shipType,
+    shipName: "none",
+  };
 
   if (is_already_registered) {
     return res.json({
@@ -24,6 +31,25 @@ exports.register = async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   hashedPassword = await bcrypt.hash(password, salt);
 
+  let acl = [];
+  for (let i = 1; i <= 16; i++) {
+    if (i == 4) {
+      acl.push({
+        sectionId: i,
+        sectionName: getSectionNameAndSeq(i).sectionName,
+        sectionSequence: getSectionNameAndSeq(i).sectionSequence,
+        isVisible: true,
+      });
+    } else {
+      acl.push({
+        sectionId: i,
+        sectionName: getSectionNameAndSeq(i).sectionName,
+        sectionSequence: getSectionNameAndSeq(i).sectionSequence,
+        isVisible: false,
+      });
+    }
+  }
+
   let user = new User({
     userId: numberOfUser + 1,
     name,
@@ -32,6 +58,8 @@ exports.register = async (req, res) => {
     position,
     shipType,
     profileImage: "none",
+    acl,
+    currentInspection,
     createdDate,
   });
 
@@ -50,7 +78,7 @@ exports.register = async (req, res) => {
     });
 
     let createdUser = await User.findById({ _id: u.id }).select(
-      "-password -_id -__v -profileImage"
+      "-password -_id -__v -profileImage -acl -currentInspection"
     );
 
     return res.status(200).send({
@@ -144,4 +172,76 @@ exports.updateUserImage = async (req, res) => {
 exports.dashboard = async (req, res) => {
   const { userId } = req.body;
   const user = await User.findOne({ userId }).select("-password");
+  if (!user)
+    return res
+      .status(404)
+      .json({ responseCode: 404, responseMessage: "FAILED" });
+  return res
+    .status(200)
+    .json({ responseCode: 200, responseMessage: "SUCCESS", acl: user.acl });
+};
+
+// desc: allocate or deallocate section
+exports.allocateDeallocateSection = async (req, res) => {
+  const { userId, sectionId, unlockDate } = req.body;
+  const user = await User.findOne({ userId }).select("-password");
+
+  user.acl.map((i) => {
+    if (i.sectionId == sectionId) {
+      i.isVisible = true;
+      i.unlockDate = unlockDate;
+    }
+  });
+
+  user.save((err, success) => {
+    if (err) {
+      console.log(err);
+    }
+    return res.status(200).json({
+      responseCode: 200,
+      responseMessage: "SUCCESS",
+      acl: success.acl,
+    });
+  });
+};
+
+// desc: update user information
+exports.updateUserProfile = async (req, res) => {
+  const { position, shipType, userId } = req.body;
+  const user = await User.findOne({ userId });
+  if (position) user.position = position;
+  if (shipType) {
+    user.shipType = shipType;
+    user.currentInspection.shipType = shipType;
+  }
+  const userSaved = await user.save();
+  if (userSaved)
+    res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+};
+
+// desc: update current inspection
+exports.updateCurrentInspection = async (req, res) => {
+  const { userId, shipType, shipName } = req.body;
+  const user = await User.findOne({ userId });
+  if (shipType) {
+    user.shipType = shipType;
+    user.currentInspection.shipType = shipType;
+  }
+  if (shipName) user.currentInspection.shipName = shipName;
+  const userSaved = await user.save();
+  if (userSaved)
+    res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+};
+
+// desc: get current inspection
+exports.getCurrentInspection = async (req, res) => {
+  const { userId } = req.params;
+  const user = await User.findOne({ userId });
+  if (user) {
+    res.status(200).json({
+      responseCode: 200,
+      responseMessage: "SUCCESS",
+      currentInspection: user.currentInspection,
+    });
+  }
 };
