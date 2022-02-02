@@ -263,4 +263,9 @@ exports.getCurrentInspection = async (req, res) => {
   }
 };
 
-// get the unlock date in js time,
+exports.grantDenyVideoAccess = async (req, res) => {
+  const { userId, videoAccess } = req.body;
+  const user = await User.findOne({ userId }).select("-password");
+  user.videoAccess = videoAccess;
+  await user.save();
+};
