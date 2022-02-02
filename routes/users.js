@@ -27,6 +27,9 @@ router.post("/dashboard", users.dashboard);
 // desc: allocate or deallocate section
 router.post("/manage-acl", users.allocateDeallocateSection);
 
+// desc: allocate section
+router.post("/allocate-section", users.allocateSection);
+
 // desc: update user's profile
 router.put("/update-profile", users.updateUserProfile);
 
