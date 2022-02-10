@@ -29,3 +29,27 @@ exports.addPosition = async (req, res) => {
   await newRank.save();
   res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
 };
+
+exports.deletePosition = async (req, res) => {
+  const { rankId } = req.body;
+  try {
+    sync.syncUpdates("positions");
+    await Positions.findOneAndDelete({ rankId });
+  } catch (err) {
+    console.log(err);
+  }
+  res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+};
+
+exports.editPosition = async (req, res) => {
+  const { rankName, rankId } = req.body;
+  try {
+    const rank = await Positions.findOne({ rankId });
+    rank.rankName = rankName;
+    sync.syncUpdates("positions");
+    await rank.save();
+  } catch (err) {
+    console.log(err);
+  }
+  res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+};

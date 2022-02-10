@@ -6,6 +6,12 @@ const ships = require("../controllers/ships");
 router.get("/get-ships", ships.getShips);
 
 // desc: add new ship type
-router.get("/addShipType", ships.addShipType);
+router.post("/addShipType", ships.addShipType);
+
+// desc: edit ship type
+router.post("/editShipType", ships.editShipType);
+
+// desc: delete ship type
+router.delete("/deleteShipType", ships.deleteShipType);
 
 module.exports = router;

@@ -269,3 +269,25 @@ exports.grantDenyVideoAccess = async (req, res) => {
   user.videoAccess = videoAccess;
   await user.save();
 };
+
+exports.deleteUserQuestion = async (req, res) => {
+  const { userId, qId } = req.body;
+  const user = await User.findOne({ userId });
+  let tempQuestion = user.questions;
+  let formedQuestionsSet = [];
+  tempQuestion.map((q, index) => {
+    if (q.qId === qId) {
+      delete tempQuestion[index];
+    }
+  });
+
+  tempQuestion.map((tq) => {
+    if (tq !== null) {
+      formedQuestionsSet.push(tq);
+    }
+  });
+
+  user.questions = formedQuestionsSet;
+  await user.save();
+  res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+};

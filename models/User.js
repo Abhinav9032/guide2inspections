@@ -87,7 +87,7 @@ const userSchema = mongoose.Schema({
         type: String,
       },
       qId: {
-        type: Number,
+        type: String,
       },
       qText: {
         type: String,
@@ -110,12 +110,15 @@ const userSchema = mongoose.Schema({
       qParent: {
         type: String,
       },
+      rank: {
+        type: String,
+      },
     },
   ],
   blockedQuestions: [
     {
       qId: {
-        type: Number,
+        type: String,
       },
     },
   ],
