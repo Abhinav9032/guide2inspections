@@ -8,4 +8,10 @@ router.get("/get-positions", positions.getPositions);
 // desc: to add a new position
 router.post("/addPosition", positions.addPosition);
 
+// desc: delete a rank
+router.delete("/deletePosition", positions.deletePosition);
+
+// desc: edit a rank
+router.post("/editPosition", positions.editPosition);
+
 module.exports = router;

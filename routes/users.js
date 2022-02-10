@@ -42,4 +42,7 @@ router.get("/get-currentInspection/:userId", users.getCurrentInspection);
 // desc: grant or deny video access
 router.post("/grant-deny-video-access", users.grantDenyVideoAccess);
 
+// desc: delete user specific questions
+router.post("/deleteUserQuestion", users.deleteUserQuestion);
+
 module.exports = router;

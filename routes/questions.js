@@ -8,4 +8,18 @@ router.post("/addOrBlockQuestions", questions.addOrBlockQuestions);
 
 router.post("/addGlobalQuestion", questions.addGlobalQuestion);
 
+router.get(
+  "/numberOfQuestionsPerSection",
+  questions.numberOfQuestionsPerSection
+);
+
+router.get(
+  "/numberOfQuestionsPerSubSection",
+  questions.numberOfQuestionsPerSubSection
+);
+
+router.delete("/deleteQuestionGlobal", questions.deleteQuestion);
+
+router.post("/editQuestionGlobal", questions.editQuestion);
+
 module.exports = router;

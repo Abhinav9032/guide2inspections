@@ -1,6 +1,8 @@
 const Question = require("../models/Question");
 const User = require("../models/User");
 const sync = require("../controllers/sync");
+const SubSections = require("../models/SubSections");
+const { bindSectionsSubSection } = require("../controllers/subSections");
 require("dotenv").config();
 
 const removeBlockedQuestions = (questions, blockedQuestions) => {
@@ -40,7 +42,7 @@ exports.fetchQuestions = async (req, res) => {
     ispresent = false; //check if there is question to be replaced
 
     questions.map((uq) => {
-      if (q.qId === uq.qId) {
+      if (q.qId == uq.qId) {
         formedQuestions.push(uq);
         ispresent = true; // confirms there is a question for replacement
       }
@@ -69,10 +71,12 @@ exports.addOrBlockQuestions = async (req, res) => {
   }
 
   if (type === 0) {
+    // block questions
     user.blockedQuestions = blockedQuestions;
   }
   sync.syncUpdates("questions");
   await user.save();
+  res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
 };
 
 //desc: add question for mass users
@@ -105,5 +109,78 @@ exports.addGlobalQuestion = async (req, res) => {
   });
   sync.syncUpdates("questions");
   await question.save();
+  res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+};
+
+// desc: get question count per secttion
+exports.numberOfQuestionsPerSection = async (req, res) => {
+  const question = await Question.find({});
+  const sections = await bindSectionsSubSection();
+  let questionCount = 0;
+  let questionCountDetails = [];
+  let subSections = [];
+
+  sections.map((s, index) => {
+    if (index !== 0) {
+      subSections = s.split(" ");
+      subSections.map((ss) => {
+        question.map((q) => {
+          if (parseInt(ss) === parseInt(q.qParent)) {
+            questionCount = questionCount + 1;
+          }
+        });
+      });
+      questionCountDetails.push({ sectionId: index, questionCount });
+      questionCount = 0;
+    }
+  });
+
+  res.status(200).json({ questionCountDetails });
+};
+
+// desc: get question count per subsecttion
+exports.numberOfQuestionsPerSubSection = async (req, res) => {
+  const question = await Question.find({});
+  const subSections = await SubSections.find({});
+  let questionCount = 0;
+  let questionCountDetails = [];
+  subSections.map((ss) => {
+    question.map((q) => {
+      if (ss.subsId === parseInt(q.qParent)) {
+        questionCount = questionCount + 1;
+      }
+    });
+    questionCountDetails.push({ subSectionId: ss.subsId, questionCount });
+    questionCount = 0;
+  });
+  res.status(200).json({ questionCountDetails });
+};
+
+exports.deleteQuestion = async (req, res) => {
+  const { qId } = req.body;
+  try {
+    await Question.findOneAndDelete({ qId });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.editQuestion = async (req, res) => {
+  const { question } = req.body;
+  try {
+    let targetQuestion = await Question.findOne({ qId: question.qId });
+    targetQuestion.suffix = question.suffix;
+    targetQuestion.qText = question.qText;
+    targetQuestion.ansType = question.ansType;
+    targetQuestion.description = question.description;
+    targetQuestion.link = question.link;
+    targetQuestion.rank = question.rank;
+    targetQuestion.shipType = question.shipType;
+    targetQuestion.vIq = question.vIq;
+    targetQuestion.qParent = question.qParent;
+    await targetQuestion.save();
+  } catch (err) {
+    console.log(err);
+  }
   res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
 };

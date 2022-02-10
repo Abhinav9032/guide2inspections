@@ -29,3 +29,27 @@ exports.addShipType = async (req, res) => {
   await newShipType.save();
   res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
 };
+
+exports.deleteShipType = async (req, res) => {
+  try {
+    const { shipTypeId } = req.body;
+    await Ships.findOneAndDelete({ shipTypeId });
+    sync.syncUpdates("shipType");
+  } catch (err) {
+    console.log(err);
+  }
+  res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+};
+
+exports.editShipType = async (req, res) => {
+  try {
+    const { shipTypeId, shipTypeName } = req.body;
+    const ship = await Ships.findOne({ shipTypeId });
+    ship.shipTypeName = shipTypeName;
+    await ship.save();
+    sync.syncUpdates("shipType");
+  } catch (err) {
+    console.log(err);
+  }
+  res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+};

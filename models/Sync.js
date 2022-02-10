@@ -2,19 +2,19 @@ const mongoose = require("mongoose");
 
 const syncSchema = mongoose.Schema({
   shipType: {
-    type: Date,
+    type: String,
   },
   positions: {
-    type: Date,
+    type: String,
   },
   sections: {
-    type: Date,
+    type: String,
   },
   questions: {
-    type: Date,
+    type: String,
   },
   subSections: {
-    type: Date,
+    type: String,
   },
 });
 
