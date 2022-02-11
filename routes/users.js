@@ -45,4 +45,7 @@ router.post("/grant-deny-video-access", users.grantDenyVideoAccess);
 // desc: delete user specific questions
 router.post("/deleteUserQuestion", users.deleteUserQuestion);
 
+// desc: mail for section unlock
+router.post("/section-unlock-mail", users.requestSectionUnlock)
+
 module.exports = router;
