@@ -319,6 +319,6 @@ exports.requestSectionUnlock = async (req, res) => {
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
-    } else return res.status(200).send(info.response);
+    } else res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
   });
 };
