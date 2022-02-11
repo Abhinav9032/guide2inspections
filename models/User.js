@@ -72,10 +72,10 @@ const userSchema = mongoose.Schema({
       sectionName: {
         type: String,
       },
-      //   isVisible: {
-      //     type: Boolean,
-      //     default: false,
-      //   },
+      isVisible: {
+        type: Boolean,
+        default: false,
+      },
       lockDate: {
         type: String,
       },
