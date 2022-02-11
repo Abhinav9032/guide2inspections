@@ -291,3 +291,34 @@ exports.deleteUserQuestion = async (req, res) => {
   await user.save();
   res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
 };
+
+exports.requestSectionUnlock = async (req, res) => {
+  const { email, phoneNumber, sectionName, accessTill } = req.body;
+  const user = await User.findOne({ email }).select("-password");
+  const { name } = user;
+  let date = new Date();
+
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    secure: false,
+    auth: {
+      user: `${process.env.EMAIL}`,
+      pass: `${process.env.PASSWORD}`,
+    },
+  });
+
+  var mailOptions = {
+    from: process.env.EMAIL,
+    to: "contact@navguidesolutions.com",
+    subject: "Section unlock request",
+    html: `<h2>Dear Admin,</h2><br/><p>New access request for the below user:</p><br/><p>Username: ${name}</p><p>Email: ${email}</p><p>Phone Number: ${phoneNumber}</p><p>Raised on: ${
+      date.toISOString().split("T")[0]
+    }</p><p>Section Name: ${sectionName}</p><p>Required access till: ${accessTill}</p>`,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else return res.status(200).send(info.response);
+  });
+};
