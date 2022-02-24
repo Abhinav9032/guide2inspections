@@ -4,8 +4,15 @@ const jwt = require("jsonwebtoken");
 const AWS = require("aws-sdk");
 const { getSectionNameAndSeq } = require("../actions/roles");
 const nodemailer = require("nodemailer");
+const Question = require("../models/Question");
+const { bindSectionsSubSection } = require("./subSections");
+const SubSections = require("../models/SubSections");
 // const { getShipId, getPositionId } = require("../actions/postion&ship");
 require("dotenv").config();
+// const {
+//   numberOfQuestionsPerSection,
+//   numberOfQuestionsPerSubSection,
+// } = require("../controllers/questions");
 
 exports.register = async (req, res) => {
   const { name, email, password, position, shipType, createdDate } = req.body;
@@ -168,17 +175,80 @@ exports.updateUserImage = async (req, res) => {
   });
 };
 
+const numberOfQuestionAsPerSectionId = async () => {
+  const question = await Question.find({});
+  let questionCount = 0;
+  let questionCountDetails = [];
+  let subSections = [];
+  const sections = await bindSectionsSubSection();
+  sections.map((s, index) => {
+    if (index !== 0) {
+      subSections = s.split(" ");
+      subSections.map((ss) => {
+        question.map((q) => {
+          if (parseInt(ss) === parseInt(q.qParent)) {
+            questionCount = questionCount + 1;
+          }
+        });
+      });
+      questionCountDetails.push({ sectionId: index, questionCount });
+      questionCount = 0;
+    }
+  });
+  return questionCountDetails;
+};
+
 // desc: user's dashboard
 exports.dashboard = async (req, res) => {
   const { userId } = req.body;
+
   const user = await User.findOne({ userId }).select("-password");
+  const { acl } = user;
+  const fetchQuestions = await numberOfQuestionAsPerSectionId();
+  const subSections = await SubSections.find({});
+
+  // fetch the total number of question for a particular section
+  const getQuestionCount = (sectionId) => {
+    let questionCount = "";
+    fetchQuestions.map((fq) => {
+      if (fq.sectionId === sectionId) {
+        questionCount = fq.questionCount;
+      }
+    });
+    return questionCount;
+  };
+
+  // fetch the total number of sub-section for a particular section
+  const getSubSectionsCount = (sectionId) => {
+    let subSectionCount = 0;
+    subSections.map((ss) => {
+      if (ss.subParent === sectionId) {
+        subSectionCount = subSectionCount + 1;
+      }
+    });
+    return subSectionCount;
+  };
+
+  let modifiedAcl = [];
+  acl.map(async (item) => {
+    modifiedAcl.push({
+      sectionId: item.sectionId,
+      sectionName: item.sectionName,
+      isVisible: item.isVisible,
+      questionCount: getQuestionCount(item.sectionId),
+      subSectionCount: getSubSectionsCount(item.sectionId),
+    });
+  });
+
   if (!user)
     return res
       .status(404)
       .json({ responseCode: 404, responseMessage: "FAILED" });
-  return res
-    .status(200)
-    .json({ responseCode: 200, responseMessage: "SUCCESS", acl: user.acl });
+  return res.status(200).json({
+    responseCode: 200,
+    responseMessage: "SUCCESS",
+    acl: modifiedAcl,
+  });
 };
 
 // desc: allocate or deallocate section

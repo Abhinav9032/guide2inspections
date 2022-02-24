@@ -8,15 +8,15 @@ router.post("/addOrBlockQuestions", questions.addOrBlockQuestions);
 
 router.post("/addGlobalQuestion", questions.addGlobalQuestion);
 
-router.get(
-  "/numberOfQuestionsPerSection",
-  questions.numberOfQuestionsPerSection
-);
+// router.get(
+//   "/numberOfQuestionsPerSection",
+//   questions.numberOfQuestionsPerSection
+// );
 
-router.get(
-  "/numberOfQuestionsPerSubSection",
-  questions.numberOfQuestionsPerSubSection
-);
+// router.get(
+//   "/numberOfQuestionsPerSubSection",
+//   questions.numberOfQuestionsPerSubSection
+// );
 
 router.delete("/deleteQuestionGlobal", questions.deleteQuestion);
 

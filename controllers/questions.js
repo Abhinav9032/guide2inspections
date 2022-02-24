@@ -113,48 +113,47 @@ exports.addGlobalQuestion = async (req, res) => {
 };
 
 // desc: get question count per secttion
-exports.numberOfQuestionsPerSection = async (req, res) => {
-  const question = await Question.find({});
-  const sections = await bindSectionsSubSection();
-  let questionCount = 0;
-  let questionCountDetails = [];
-  let subSections = [];
+// exports.numberOfQuestionsPerSection = async () => {
+//   const question = await Question.find({});
+//   const sections = await bindSectionsSubSection();
+//   let questionCount = 0;
+//   let questionCountDetails = [];
+//   let subSections = [];
 
-  sections.map((s, index) => {
-    if (index !== 0) {
-      subSections = s.split(" ");
-      subSections.map((ss) => {
-        question.map((q) => {
-          if (parseInt(ss) === parseInt(q.qParent)) {
-            questionCount = questionCount + 1;
-          }
-        });
-      });
-      questionCountDetails.push({ sectionId: index, questionCount });
-      questionCount = 0;
-    }
-  });
-
-  res.status(200).json({ questionCountDetails });
-};
+//   sections.map((s, index) => {
+//     if (index !== 0) {
+//       subSections = s.split(" ");
+//       subSections.map((ss) => {
+//         question.map((q) => {
+//           if (parseInt(ss) === parseInt(q.qParent)) {
+//             questionCount = questionCount + 1;
+//           }
+//         });
+//       });
+//       questionCountDetails.push({ sectionId: index, questionCount });
+//       questionCount = 0;
+//     }
+//   });
+//   return questionCountDetails;
+// };
 
 // desc: get question count per subsecttion
-exports.numberOfQuestionsPerSubSection = async (req, res) => {
-  const question = await Question.find({});
-  const subSections = await SubSections.find({});
-  let questionCount = 0;
-  let questionCountDetails = [];
-  subSections.map((ss) => {
-    question.map((q) => {
-      if (ss.subsId === parseInt(q.qParent)) {
-        questionCount = questionCount + 1;
-      }
-    });
-    questionCountDetails.push({ subSectionId: ss.subsId, questionCount });
-    questionCount = 0;
-  });
-  res.status(200).json({ questionCountDetails });
-};
+// exports.numberOfQuestionsPerSubSection = async () => {
+//   const question = await Question.find({});
+//   const subSections = await SubSections.find({});
+//   let questionCount = 0;
+//   let questionCountDetails = [];
+//   subSections.map((ss) => {
+//     question.map((q) => {
+//       if (ss.subsId === parseInt(q.qParent)) {
+//         questionCount = questionCount + 1;
+//       }
+//     });
+//     questionCountDetails.push({ subSectionId: ss.subsId, questionCount });
+//     questionCount = 0;
+//   });
+//   return questionCountDetails;
+// };
 
 exports.deleteQuestion = async (req, res) => {
   const { qId } = req.body;
