@@ -175,6 +175,7 @@ exports.updateUserImage = async (req, res) => {
   });
 };
 
+
 const numberOfQuestionAsPerSectionId = async () => {
   const question = await Question.find({});
   let questionCount = 0;
