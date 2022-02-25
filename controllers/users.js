@@ -380,7 +380,7 @@ exports.requestSectionUnlock = async (req, res) => {
 
   var mailOptions = {
     from: process.env.EMAIL,
-    to: "solutionnaviguide@gmail.com",
+    to: "guide2inspections.service@gmail.com",
     subject: "Section unlock request",
     html: `<h2>Dear Admin,</h2><br/><p>New access request for the below user:</p><br/><p>Username: ${name}</p><p>Email: ${email}</p><p>Phone Number: ${phoneNumber}</p><p>Raised on: ${
       date.toISOString().split("T")[0]
