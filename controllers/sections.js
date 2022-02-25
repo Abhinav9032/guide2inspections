@@ -58,7 +58,6 @@ exports.editSection = async (req, res) => {
     let targetSection = await Section.findOne({
       sectionId: section.sectionId,
     });
-    console.log(targetSection);
     targetSection.eligibleRank = section.eligibleRank;
     targetSection.eligibleShipType = section.eligibleShipType;
     targetSection.sectionName = section.sectionName;
