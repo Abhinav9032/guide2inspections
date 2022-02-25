@@ -209,7 +209,7 @@ exports.dashboard = async (req, res) => {
 
   // fetch the total number of question for a particular section
   const getQuestionCount = (sectionId) => {
-    let questionCount = "";
+    let questionCount = 0;
     fetchQuestions.map((fq) => {
       if (fq.sectionId === sectionId) {
         questionCount = fq.questionCount;

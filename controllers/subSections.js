@@ -73,7 +73,7 @@ exports.bindSectionsSubSection = async () => {
   const subSections = await SubSections.find({}).sort({ _id: 1 });
   let sections = [""],
     individualSubSection = "";
-  for (let i = 1; i <= 16; i++) {
+  for (let i = 1; i <= subSections.length; i++) {
     subSections.map((ss) => {
       if (ss.subParent === i) {
         individualSubSection = individualSubSection + String(ss.subsId) + " ";
