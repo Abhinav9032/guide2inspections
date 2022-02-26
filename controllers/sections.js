@@ -1,45 +1,24 @@
 const sync = require("../controllers/sync");
 const Section = require("../models/Sections");
+const User = require("../models/User");
 
-function rankId(id) {
-  return id;
-}
 exports.setupSection = async (req, res) => {
-  const { sectionName, sectionThumbnail, sequence, type } = req.body;
+  const {
+    sectionName,
+    sectionThumbnail,
+    sequence,
+    eligibleShipType,
+    eligibleRank,
+  } = req.body;
   const sections = await Section.find({});
-  // type for all rank or only selected rank(3)
-
-  let allRanksAllowed = [],
-    eligibleShipType = [],
-    setEligibleShipType;
-
-  for (let i = 1; i <= 28; i++) {
-    allRanksAllowed.push({ rankId: rankId(i) });
-  }
-
-  for (let i = 1; i <= 9; i++) {
-    eligibleShipType.push({ shipTypeId: rankId(i) });
-  }
-
-  setEligibleShipType = JSON.stringify(eligibleShipType);
-  // if (
-  //   sectionName == "Engine Room" ||
-  //   sectionName == "LSA FFA" ||
-  //   sectionName == "Deck Documentation"
-  // ) {
-  // } else {
-  //   setEligibleShipType = [];
-  // }
 
   let section = new Section({
     sectionId: sections.length + 1,
     sectionName,
     sectionThumbnail,
-    sequence,
-    eligibleRank:
-      type == "all" ? JSON.stringify(allRanksAllowed) : [{ rankId: 3 }],
-    eligibleShipType: setEligibleShipType,
-    note: "",
+    sequence: sections.length + 1,
+    eligibleRank,
+    eligibleShipType,
     lastUnlockDate: 0,
   });
   sync.syncUpdates("sections");

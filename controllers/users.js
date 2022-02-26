@@ -7,6 +7,7 @@ const nodemailer = require("nodemailer");
 const Question = require("../models/Question");
 const { bindSectionsSubSection } = require("./subSections");
 const SubSections = require("../models/SubSections");
+const Sections = require("../models/Sections");
 // const { getShipId, getPositionId } = require("../actions/postion&ship");
 require("dotenv").config();
 // const {
@@ -198,14 +199,59 @@ const numberOfQuestionAsPerSectionId = async () => {
   return questionCountDetails;
 };
 
+const addSectionsInAcl = async (userId, sections) => {
+  const user = await User.findOne({ userId }).select("-password");
+  const { acl } = user;
+  sections.map((s, index) => {
+    if (!acl[index]) {
+      acl.push({
+        sectionId: s.sectionId,
+        sectionName: s.sectionName,
+        isVisible: false,
+      });
+    }
+  });
+
+  await user.save();
+  return acl;
+};
+
+const removeSectionsInAcl = async (userId, sections) => {
+  const user = await User.findOne({ userId }).select("-password");
+  const { acl } = user;
+  let updatedAcl = [];
+  acl.map((_, index) => {
+    if (!sections[index]) {
+      delete acl[index];
+    }
+  });
+
+  acl.map((item) => {
+    if (item) {
+      updatedAcl.push(item);
+    }
+  });
+  user.acl = updatedAcl;
+  await user.save();
+  return updatedAcl;
+};
+
 // desc: user's dashboard
 exports.dashboard = async (req, res) => {
   const { userId } = req.body;
 
   const user = await User.findOne({ userId }).select("-password");
-  const { acl } = user;
+  let { acl } = user;
   const fetchQuestions = await numberOfQuestionAsPerSectionId();
   const subSections = await SubSections.find({});
+  const sections = await Sections.find({});
+
+  if (sections.length > acl.length) {
+    acl = await addSectionsInAcl(userId, sections);
+  }
+  if (sections.length < acl.length) {
+    acl = await removeSectionsInAcl(userId, sections);
+  }
 
   // fetch the total number of question for a particular section
   const getQuestionCount = (sectionId) => {
