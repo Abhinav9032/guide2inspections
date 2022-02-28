@@ -7,7 +7,8 @@ require("dotenv").config();
 const resetAcl = async (email) => {
   const user = await User.findOne({ email }).select("-password");
   user.acl.map((i) => {
-    i.isVisible = false;
+    if (i.sectionId === 4) i.isVisible = true;
+    else i.isVisible = false;
   });
   await user.save();
 };
