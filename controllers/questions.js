@@ -10,7 +10,7 @@ const removeBlockedQuestions = (questions, blockedQuestions) => {
 
   blockedQuestions.map((bq) => {
     questions.map((q, i) => {
-      if (bq.qId === q.qId) {
+      if (bq.qId == q.qId) {
         delete questions[i];
       }
     });
