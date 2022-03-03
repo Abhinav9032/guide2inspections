@@ -2,7 +2,6 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const AWS = require("aws-sdk");
-const { getSectionNameAndSeq } = require("../actions/roles");
 const nodemailer = require("nodemailer");
 const Question = require("../models/Question");
 const { bindSectionsSubSection } = require("./subSections");
@@ -20,7 +19,19 @@ exports.register = async (req, res) => {
 
   const is_already_registered = await User.findOne({ email });
 
-  const numberOfUser = (await User.find({})).length;
+  const getLatestUser = await User.find({}).sort({ _id: -1 });
+  const sections = await Sections.find({});
+
+  const getSectionNameAndSeq = (sectionId) => {
+    let section = {};
+    sections.map((i) => {
+      if (i.sectionId === sectionId) {
+        section.sectionName = i.sectionName;
+        section.sequence = i.sequence;
+      }
+    });
+    return section;
+  };
 
   const currentInspection = {
     shipType,
@@ -40,26 +51,26 @@ exports.register = async (req, res) => {
   hashedPassword = await bcrypt.hash(password, salt);
 
   let acl = [];
-  for (let i = 1; i <= 16; i++) {
+  for (let i = 1; i <= sections.length; i++) {
     if (i == 4) {
       acl.push({
         sectionId: i,
         sectionName: getSectionNameAndSeq(i).sectionName,
-        sectionSequence: getSectionNameAndSeq(i).sectionSequence,
+        sectionSequence: getSectionNameAndSeq(i).sequence,
         isVisible: true,
       });
     } else {
       acl.push({
         sectionId: i,
         sectionName: getSectionNameAndSeq(i).sectionName,
-        sectionSequence: getSectionNameAndSeq(i).sectionSequence,
+        sectionSequence: getSectionNameAndSeq(i).sequence,
         isVisible: false,
       });
     }
   }
 
   let user = new User({
-    userId: numberOfUser + 1,
+    userId: getLatestUser[0].userId + 1,
     name,
     email,
     password: hashedPassword,
@@ -276,11 +287,21 @@ exports.dashboard = async (req, res) => {
     return subSectionCount;
   };
 
+  const getLatestSectionModifications = (sectionId) => {
+    let section = {};
+    sections.map((i) => {
+      if (i.sectionId === sectionId) {
+        section.sectionName = i.sectionName;
+      }
+    });
+    return section;
+  };
+
   let modifiedAcl = [];
   acl.map(async (item) => {
     modifiedAcl.push({
       sectionId: item.sectionId,
-      sectionName: item.sectionName,
+      sectionName: getLatestSectionModifications(item.sectionId).sectionName,
       isVisible: item.isVisible,
       questionCount: getQuestionCount(item.sectionId),
       subSectionCount: getSubSectionsCount(item.sectionId),
@@ -339,6 +360,15 @@ exports.allocateSection = async (req, res) => {
   res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS", acl });
 };
 
+// const resetAcl = async (email) => {
+//   const user = await User.findOne({ email }).select("-password");
+//   user.acl.map((i) => {
+//     if (i.sectionId === 4) i.isVisible = true;
+//     else i.isVisible = false;
+//   });
+//   await user.save();
+// };
+
 // desc: update user information
 exports.updateUserProfile = async (req, res) => {
   const { position, shipType, userId } = req.body;
@@ -348,6 +378,7 @@ exports.updateUserProfile = async (req, res) => {
     user.shipType = shipType;
     user.currentInspection.shipType = shipType;
   }
+  // resetAcl(email);
   const userSaved = await user.save();
   if (userSaved)
     res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
@@ -385,6 +416,7 @@ exports.grantDenyVideoAccess = async (req, res) => {
   const user = await User.findOne({ userId }).select("-password");
   user.videoAccess = videoAccess;
   await user.save();
+  res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
 };
 
 exports.deleteUserQuestion = async (req, res) => {

@@ -18,8 +18,9 @@ exports.deleteSubSection = async (req, res) => {
 
 exports.addSubSection = async (req, res) => {
   const { subSection } = req.body;
+  const latestSubSection = await SubSections.find({}).sort({ _id: -1 });
   let newSubSection = SubSections({
-    subsId: subSection.subsId,
+    subsId: latestSubSection[0].subsId + 1,
     name: subSection.name,
     subParent: subSection.subParent,
     subLink: subSection.subLink,
@@ -46,27 +47,31 @@ exports.editSubSection = async (req, res) => {
     const targetSubSection = await SubSections.findOne({
       subsId: subSection.subsId,
     });
-    targetSubSection.name = subSection.name;
-    targetSubSection.subParent = subSection.subParent;
-    targetSubSection.sited = subSection.sited;
-    targetSubSection.observation = subSection.observation;
-    targetSubSection.clouserDate = subSection.clouserDate;
-    targetSubSection.comments = subSection.comments;
-    targetSubSection.risk = subSection.risk;
-    targetSubSection.status = subSection.status;
-    targetSubSection.note = subSection.note;
-    targetSubSection.attachmentLink = subSection.attachmentLink;
-    targetSubSection.ranks = subSection.ranks;
-    targetSubSection.shipType = subSection.shipType;
-    targetSubSection.evidence = subSection.evidence;
 
-    sync.syncUpdates("subSections");
-    await targetSubSection.save();
+    if (!targetSubSection) {
+      res.status(404).json({ message: "NO SUBSECTION FOUND" });
+    } else {
+      targetSubSection.name = subSection.name;
+      targetSubSection.subParent = subSection.subParent;
+      targetSubSection.sited = subSection.sited;
+      targetSubSection.observation = subSection.observation;
+      targetSubSection.clouserDate = subSection.clouserDate;
+      targetSubSection.comments = subSection.comments;
+      targetSubSection.risk = subSection.risk;
+      targetSubSection.status = subSection.status;
+      targetSubSection.note = subSection.note;
+      targetSubSection.attachmentLink = subSection.attachmentLink;
+      targetSubSection.ranks = subSection.ranks;
+      targetSubSection.shipType = subSection.shipType;
+      targetSubSection.evidence = subSection.evidence;
+
+      sync.syncUpdates("subSections");
+      await targetSubSection.save();
+      res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+    }
   } catch (err) {
     console.log(err);
   }
-
-  res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
 };
 
 exports.bindSectionsSubSection = async () => {
