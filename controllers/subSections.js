@@ -19,6 +19,7 @@ exports.deleteSubSection = async (req, res) => {
 exports.addSubSection = async (req, res) => {
   const { subSection } = req.body;
   const latestSubSection = await SubSections.find({}).sort({ _id: -1 });
+  let result = {};
   let newSubSection = SubSections({
     subsId: latestSubSection[0].subsId + 1,
     name: subSection.name,
@@ -37,12 +38,15 @@ exports.addSubSection = async (req, res) => {
     evidence: subSection.evidence,
   });
   sync.syncUpdates("subSections");
-  await newSubSection.save();
-  res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+  result = await newSubSection.save();
+  res
+    .status(200)
+    .json({ responseCode: 200, responseMessage: "SUCCESS", result });
 };
 
 exports.editSubSection = async (req, res) => {
   const { subSection } = req.body;
+  let result = {};
   try {
     const targetSubSection = await SubSections.findOne({
       subsId: subSection.subsId,
@@ -66,8 +70,10 @@ exports.editSubSection = async (req, res) => {
       targetSubSection.evidence = subSection.evidence;
 
       sync.syncUpdates("subSections");
-      await targetSubSection.save();
-      res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+      result = await targetSubSection.save();
+      res
+        .status(200)
+        .json({ responseCode: 200, responseMessage: "SUCCESS", result });
     }
   } catch (err) {
     console.log(err);
