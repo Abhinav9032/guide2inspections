@@ -32,6 +32,7 @@ exports.setupSection = async (req, res) => {
 
 exports.editSection = async (req, res) => {
   const { section } = req.body;
+  let result = {};
 
   try {
     let targetSection = await Section.findOne({
@@ -42,11 +43,13 @@ exports.editSection = async (req, res) => {
     targetSection.sectionName = section.sectionName;
     targetSection.sectionThumbnail = section.sectionThumbnail;
     sync.syncUpdates("sections");
-    await targetSection.save();
+    result = await targetSection.save();
   } catch (err) {
     console.log(err);
   }
-  res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+  res
+    .status(200)
+    .json({ responseCode: 200, responseMessage: "SUCCESS", result });
 };
 
 exports.deleteSection = async (req, res) => {

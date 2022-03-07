@@ -82,6 +82,7 @@ exports.addOrBlockQuestions = async (req, res) => {
 //desc: add question for mass users
 exports.addGlobalQuestion = async (req, res) => {
   const fetchedQuestions = await Question.find({}).sort({ _id: -1 });
+  let result = {};
 
   const {
     suffix,
@@ -108,8 +109,10 @@ exports.addGlobalQuestion = async (req, res) => {
     qParent,
   });
   sync.syncUpdates("questions");
-  await question.save();
-  res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+  result = await question.save();
+  res
+    .status(200)
+    .json({ responseCode: 200, responseMessage: "SUCCESS", result });
 };
 
 // desc: get question count per secttion
@@ -159,6 +162,7 @@ exports.deleteQuestion = async (req, res) => {
   const { qId } = req.body;
   try {
     await Question.findOneAndDelete({ qId });
+    res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
   } catch (err) {
     console.log(err);
   }
@@ -166,6 +170,7 @@ exports.deleteQuestion = async (req, res) => {
 
 exports.editQuestion = async (req, res) => {
   const { question } = req.body;
+  let result = {};
   try {
     let targetQuestion = await Question.findOne({ qId: question.qId });
     targetQuestion.suffix = question.suffix;
@@ -177,9 +182,11 @@ exports.editQuestion = async (req, res) => {
     targetQuestion.shipType = question.shipType;
     targetQuestion.vIq = question.vIq;
     targetQuestion.qParent = question.qParent;
-    await targetQuestion.save();
+    result = await targetQuestion.save();
   } catch (err) {
     console.log(err);
   }
-  res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
+  res
+    .status(200)
+    .json({ responseCode: 200, responseMessage: "SUCCESS", result });
 };

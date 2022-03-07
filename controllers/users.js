@@ -359,14 +359,14 @@ exports.allocateSection = async (req, res) => {
   res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS", acl });
 };
 
-// const resetAcl = async (email) => {
-//   const user = await User.findOne({ email }).select("-password");
-//   user.acl.map((i) => {
-//     if (i.sectionId === 4) i.isVisible = true;
-//     else i.isVisible = false;
-//   });
-//   await user.save();
-// };
+const resetAcl = async (email) => {
+  const user = await User.findOne({ email }).select("-password");
+  user.acl.map((i) => {
+    if (i.sectionId === 4) i.isVisible = true;
+    else i.isVisible = false;
+  });
+  await user.save();
+};
 
 // desc: update user information
 exports.updateUserProfile = async (req, res) => {
@@ -377,7 +377,7 @@ exports.updateUserProfile = async (req, res) => {
     user.shipType = shipType;
     user.currentInspection.shipType = shipType;
   }
-  // resetAcl(email);
+  resetAcl(email);
   const userSaved = await user.save();
   if (userSaved)
     res.status(200).json({ responseCode: 200, responseMessage: "SUCCESS" });
