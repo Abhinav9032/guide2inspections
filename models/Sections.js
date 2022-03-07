@@ -10,22 +10,28 @@ const sectionSchema = mongoose.Schema({
   sectionThumbnail: {
     type: String,
   },
-  eligibleRank: [
-    {
-      _id: false,
-      rankId: {
-        type: Number,
-      },
-    },
-  ],
-  eligibleShipType: [
-    {
-      _id: false,
-      shipTypeId: {
-        type: Number,
-      },
-    },
-  ],
+  // eligibleRank: [
+  //   {
+  //     _id: false,
+  //     rankId: {
+  //       type: Number,
+  //     },
+  //   },
+  // ],
+  eligibleRank: {
+    type: String,
+  },
+  // eligibleShipType: [
+  //   {
+  //     _id: false,
+  //     shipTypeId: {
+  //       type: Number,
+  //     },
+  //   },
+  // ],
+  eligibleShipType: {
+    type: String,
+  },
   sequence: {
     type: Number,
   },
@@ -38,3 +44,4 @@ const sectionSchema = mongoose.Schema({
 });
 
 module.exports = Section = mongoose.model("section", sectionSchema);
+

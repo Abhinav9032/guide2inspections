@@ -4,6 +4,15 @@ const jwt = require("jsonwebtoken");
 // const { getShipId, getPositionId } = require("../actions/postion&ship");
 require("dotenv").config();
 
+const resetAcl = async (email) => {
+  const user = await User.findOne({ email }).select("-password");
+  user.acl.map((i) => {
+    if (i.sectionId === 4) i.isVisible = true;
+    else i.isVisible = false;
+  });
+  await user.save();
+};
+
 /* authenticate the user and provide login token */
 exports.isAuth = async (req, res, next) => {
   const { email, password } = req.body;
@@ -13,7 +22,7 @@ exports.isAuth = async (req, res, next) => {
       .status(404)
       .json({ responseCode: 404, responseMessage: "User not found" });
   }
-
+  resetAcl(email);
   let tempUser = {
     name: user.name,
     userId: user.userId,

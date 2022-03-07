@@ -76,7 +76,48 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         default: false,
       },
-      unlockDate: {
+      lockDate: {
+        type: String,
+      },
+    },
+  ],
+  questions: [
+    {
+      suffix: {
+        type: String,
+      },
+      qId: {
+        type: String,
+      },
+      qText: {
+        type: String,
+      },
+      ansType: {
+        type: String,
+      },
+      link: {
+        type: String,
+      },
+      description: {
+        type: String,
+      },
+      shipType: {
+        type: String,
+      },
+      vIq: {
+        type: String,
+      },
+      qParent: {
+        type: String,
+      },
+      rank: {
+        type: String,
+      },
+    },
+  ],
+  blockedQuestions: [
+    {
+      qId: {
         type: String,
       },
     },

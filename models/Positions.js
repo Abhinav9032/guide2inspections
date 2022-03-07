@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
 
 const positionSchema = mongoose.Schema({
-  _id: false,
   rankId: {
-    type: String,
+    type: Number,
   },
   rankName: {
     type: String,
