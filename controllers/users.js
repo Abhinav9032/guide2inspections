@@ -326,7 +326,7 @@ exports.allocateDeallocateSection = async (req, res) => {
 
   user.acl.map((i) => {
     if (i.sectionId == sectionId) {
-      i.isVisible = true;
+      i.isVisible = !i.isVisible;
       i.lockDate = lockDate;
     }
   });
